@@ -3,8 +3,6 @@ import { stkPushRequest } from "daraja-kit";
 import { payments } from "@/app/db/schema";
 import { db } from "@/app/db/drizzle-client";
 
-const appBaseURL = process.env.APP_BASE_URL;
-
 export const POST = async (req: NextRequest, res: NextResponse) => {
   const { phoneNumber, amount, accountReference } = await req.json();
 
@@ -17,7 +15,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   } = {
     accountReference,
     amount,
-    callbackURL: `https://be01-41-139-128-79.ngrok-free.app/api/mpesa/stk-push-callback`,
+    callbackURL: `${process.env.MPESA_APP_BASE_URL}/api/mpesa/stk-push-callback`,
     phoneNumber,
     transactionDesc: "SOME DESCRIPTION",
   };
@@ -39,15 +37,16 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   );
 
   try {
+    const stkPushRes = await stkPushRequest(requestBody);
+
     await db.insert(payments).values({
       mfl,
       billId,
       status: "INITIATED",
       amount: requestBody.amount,
       phoneNumber: requestBody.phoneNumber,
+      merchantReqId: stkPushRes.MerchantRequestID,
     });
-
-    const stkPushRes = await stkPushRequest(requestBody);
 
     return NextResponse.json({ data: stkPushRes }, { status: 200 });
   } catch (err: any) {

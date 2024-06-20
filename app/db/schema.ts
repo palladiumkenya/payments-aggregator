@@ -10,6 +10,7 @@ export const payments = sqliteTable("payments", {
   status: text("status", {
     enum: ["INITIATED", "COMPLETE", "FAILED"],
   }).notNull(),
+  merchantReqId: text("merchant_req_id"),
   receiptNumber: text("receipt_number"),
   createdAt: text("created_at")
     .default(sql`CURRENT_TIMESTAMP`)

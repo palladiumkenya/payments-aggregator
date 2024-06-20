@@ -7,13 +7,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {
   console.log("stk-push-callback-request", req);
 
-  const text: STKPushSuccessfulCallbackBody = req.body;
+  const received: STKPushSuccessfulCallbackBody = req.body;
 
-  // TODO update the payment record here
   await db
     .update(payments)
     .set({ status: "COMPLETE", receiptNumber: "SOME" })
-    .where(eq(payments.id, 1));
+    .where(
+      eq(payments.merchantReqId, received.Body.stkCallback.MerchantRequestID)
+    );
 };
 
 export default POST;
