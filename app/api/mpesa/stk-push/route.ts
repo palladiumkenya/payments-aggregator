@@ -1,28 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stkPushRequest } from "daraja-kit";
-import { db } from "@/drizzle.config";
-import { payments } from "@/db/schema";
+import { payments } from "@/app/db/schema";
+import { db } from "@/app/db/drizzle-client";
 
 const appBaseURL = process.env.APP_BASE_URL;
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
   const { phoneNumber, amount, accountReference } = await req.json();
 
-  const requestBody = {
+  const requestBody: {
+    accountReference: string;
+    amount: string;
+    phoneNumber: string;
+    transactionDesc: string;
+    callbackURL: string;
+  } = {
     accountReference,
     amount,
-    callbackURL: `${appBaseURL}/api/mpesa/stk-push-callback`,
+    callbackURL: `https://be01-41-139-128-79.ngrok-free.app/api/mpesa/stk-push-callback`,
     phoneNumber,
     transactionDesc: "SOME DESCRIPTION",
   };
 
+  // {
+  //   accountReference: '15339#0211-3',
+  //   amount: '200',
+  //   callbackURL: 'https://compass-tau.vercel.app/api/mpesa/stk-push-callback',
+  //   phoneNumber: '254719428019',
+  //   transactionDesc: 'SOME DESCRIPTION'
+  // }
+
   console.log(requestBody);
+
+  const mfl = requestBody.accountReference.substring(0, 5);
+  const billId = requestBody.accountReference.substring(
+    6,
+    requestBody.accountReference.indexOf("-")
+  );
+
   try {
-    // TODO Save the data here to a db
     await db.insert(payments).values({
-      billId: "some bill id",
-      mfl: "some mfl",
+      mfl,
+      billId,
       status: "INITIATED",
+      amount: requestBody.amount,
+      phoneNumber: requestBody.phoneNumber,
     });
 
     const stkPushRes = await stkPushRequest(requestBody);

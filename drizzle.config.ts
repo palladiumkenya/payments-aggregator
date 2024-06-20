@@ -1,11 +1,17 @@
-import { drizzle } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
+import { defineConfig } from "drizzle-kit";
 
-const connection = await mysql.createConnection({
-  host: "http://localhost:3306/",
-  user: "amos-kenya-emr",
-  database: "kenya-emr-payments",
-  password: "kenyaemr",
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: ".env.local",
 });
 
-export const db = drizzle(connection);
+export default defineConfig({
+  schema: "./app/db/schema.ts",
+  dialect: "sqlite",
+  driver: "turso",
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+    authToken: process.env.DATABASE_AUTH_TOKEN,
+  },
+});
