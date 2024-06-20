@@ -12,17 +12,31 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       .from(payments)
       .where(eq(payments.id, body.requestId));
 
-    return NextResponse.json(
-      { status: paymentRequests.at(0)?.status },
-      {
-        status: 200,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-      }
-    );
+    if (paymentRequests.length > 1) {
+      return NextResponse.json(
+        { status: paymentRequests.at(0)?.status },
+        {
+          status: 200,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          },
+        }
+      );
+    } else {
+      return NextResponse.json(
+        { status: "NOT-FOUND" },
+        {
+          status: 200,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          },
+        }
+      );
+    }
   } catch (error) {
     console.error(error);
     return NextResponse.json(
