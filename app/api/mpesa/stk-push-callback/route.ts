@@ -4,7 +4,7 @@ import { STKPushSuccessfulCallbackBody } from "daraja-kit";
 import { eq } from "drizzle-orm";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const POST = async (req: NextApiRequest, res: NextApiResponse) => {
+export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
   console.log("stk-push-callback-request", req);
 
   const received: STKPushSuccessfulCallbackBody = req.body;
@@ -16,5 +16,3 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
       eq(payments.merchantReqId, received.Body.stkCallback.MerchantRequestID)
     );
 };
-
-export default POST;
