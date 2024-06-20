@@ -8,18 +8,25 @@ import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
-  console.log("stk-push-callback-request", req);
+  const received: STKPushSuccessfulCallbackBody = await req.json();
 
-  const received: STKPushSuccessfulCallbackBody | STKPushErrorCallbackBody =
-    await req.json();
+  console.log("received", received);
 
   if (received.Body.stkCallback.ResultCode === 0) {
+    const receiptNumber = received.Body.stkCallback.CallbackMetadata.Item.find(
+      // @ts-ignore
+      (item) => item.Name === "MpesaReceiptNumber"
+      // @ts-ignore
+    )?.Value;
+
     await db
       .update(payments)
-      .set({ status: "COMPLETE", receiptNumber: "SOME" })
+      .set({ status: "COMPLETE", receiptNumber })
       .where(
         eq(payments.merchantReqId, received.Body.stkCallback.MerchantRequestID)
       );
+
+    return NextResponse.json({ message: "received" }, { status: 200 });
   } else {
     await db
       .update(payments)
@@ -27,5 +34,13 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       .where(
         eq(payments.merchantReqId, received.Body.stkCallback.MerchantRequestID)
       );
+    return NextResponse.json(
+      {
+        message: "An error occurred",
+      },
+      {
+        status: 500,
+      }
+    );
   }
 };

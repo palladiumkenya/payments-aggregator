@@ -3,6 +3,9 @@ import { stkPushRequest } from "daraja-kit";
 import { payments } from "@/app/db/schema";
 import { db } from "@/app/db/drizzle-client";
 
+// const MPESA_APP_BASE_URL = process.env.MPESA_APP_BASE_URL;
+const MPESA_APP_BASE_URL = process.env.APP_BASE_URL;
+
 export const POST = async (req: NextRequest, res: NextResponse) => {
   const { phoneNumber, amount, accountReference } = await req.json();
 
@@ -15,7 +18,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   } = {
     accountReference,
     amount,
-    callbackURL: `${process.env.MPESA_APP_BASE_URL}/api/mpesa/stk-push-callback`,
+    callbackURL: `${MPESA_APP_BASE_URL}/api/mpesa/stk-push-callback`,
     phoneNumber,
     transactionDesc: "SOME DESCRIPTION",
   };
