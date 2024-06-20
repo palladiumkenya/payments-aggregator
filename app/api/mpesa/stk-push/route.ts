@@ -23,14 +23,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     transactionDesc: "SOME DESCRIPTION",
   };
 
-  // {
-  //   accountReference: '15339#0211-3',
-  //   amount: '200',
-  //   callbackURL: 'https://compass-tau.vercel.app/api/mpesa/stk-push-callback',
-  //   phoneNumber: '254719428019',
-  //   transactionDesc: 'SOME DESCRIPTION'
-  // }
-
   console.log(requestBody);
 
   const mfl = requestBody.accountReference.substring(0, 5);
@@ -42,19 +34,31 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   try {
     const stkPushRes = await stkPushRequest(requestBody);
 
-    await db.insert(payments).values({
-      mfl,
-      billId,
-      status: "INITIATED",
-      amount: requestBody.amount,
-      phoneNumber: requestBody.phoneNumber,
-      merchantReqId: stkPushRes.MerchantRequestID,
-    });
+    const res = await db
+      .insert(payments)
+      .values({
+        mfl,
+        billId,
+        status: "INITIATED",
+        amount: requestBody.amount,
+        phoneNumber: requestBody.phoneNumber,
+        merchantReqId: stkPushRes.MerchantRequestID,
+      })
+      .returning({ requestId: payments.id });
 
-    return NextResponse.json({ data: stkPushRes }, { status: 200 });
+    return NextResponse.json(
+      { requestId: res.at(0)?.requestId },
+      {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+      }
+    );
   } catch (err: any) {
     console.error(err);
-
     return NextResponse.json(
       {
         message: "An error occurred",
@@ -64,4 +68,15 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       }
     );
   }
+};
+
+export const OPTIONS = async () => {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
 };
