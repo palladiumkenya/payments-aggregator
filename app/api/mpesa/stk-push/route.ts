@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stkPushRequest } from "daraja-kit";
 import { payments } from "@/app/db/schema";
 import { db } from "@/app/db/drizzle-client";
+import { stkPushRequest } from "@/daraja/stk-push";
 
 const MPESA_APP_BASE_URL = process.env.APP_BASE_URL;
 
@@ -21,8 +21,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     phoneNumber,
     transactionDesc: "SOME DESCRIPTION",
   };
-
-  console.log(requestBody);
 
   const mfl = requestBody.accountReference.substring(0, 5);
   const billId = requestBody.accountReference.substring(

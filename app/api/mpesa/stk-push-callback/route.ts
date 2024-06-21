@@ -1,16 +1,11 @@
 import { db } from "@/app/db/drizzle-client";
 import { payments } from "@/app/db/schema";
-import {
-  STKPushErrorCallbackBody,
-  STKPushSuccessfulCallbackBody,
-} from "daraja-kit";
+import { STKPushSuccessfulCallbackBody } from "daraja-kit";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
   const received: STKPushSuccessfulCallbackBody = await req.json();
-
-  console.log("received", received);
 
   if (received.Body.stkCallback.ResultCode === 0) {
     const receiptNumber = received.Body.stkCallback.CallbackMetadata.Item.find(
