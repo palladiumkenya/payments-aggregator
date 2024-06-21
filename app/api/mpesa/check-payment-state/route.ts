@@ -12,7 +12,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       .from(payments)
       .where(eq(payments.id, body.requestId));
 
-    if (paymentRequests.length > 1) {
+    if (paymentRequests.length > 0) {
       return NextResponse.json(
         { status: paymentRequests.at(0)?.status },
         {
