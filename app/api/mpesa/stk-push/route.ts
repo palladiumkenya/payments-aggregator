@@ -2,19 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { payments } from "@/app/db/schema";
 import { db } from "@/app/db/drizzle-client";
 import { stkPushRequest } from "@/daraja/stk-push";
+import { allowedOrigins, corsOptions } from "@/utils/cors";
 
 const MPESA_APP_BASE_URL = process.env.APP_BASE_URL;
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
-  const { phoneNumber, amount, accountReference } = await req.json();
+type RequestBody = {
+  accountReference: string;
+  amount: string;
+  phoneNumber: string;
+  transactionDesc: string;
+  callbackURL: string;
+};
 
-  const requestBody: {
-    accountReference: string;
-    amount: string;
-    phoneNumber: string;
-    transactionDesc: string;
-    callbackURL: string;
-  } = {
+export const POST = async (request: NextRequest) => {
+  const { phoneNumber, amount, accountReference } = await request.json();
+
+  const requestBody: RequestBody = {
     accountReference,
     amount,
     callbackURL: `${MPESA_APP_BASE_URL}/api/mpesa/stk-push-callback`,
@@ -43,17 +46,26 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       })
       .returning({ requestId: payments.id });
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       { requestId: res.at(0)?.requestId },
       {
         status: 200,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
       }
     );
+
+    // Handling cors
+    const origin = request.headers.get("origin") ?? "";
+    const isAllowedOrigin = allowedOrigins.includes(origin);
+
+    if (isAllowedOrigin) {
+      response.headers.set("Access-Control-Allow-Origin", origin);
+    }
+
+    Object.entries(corsOptions).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+
+    return response;
   } catch (err: any) {
     console.error(err);
     return NextResponse.json(
@@ -67,13 +79,13 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   }
 };
 
-export const OPTIONS = async () => {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    },
-  });
+export const OPTIONS = async (request: NextRequest) => {
+  const origin = request.headers.get("origin") ?? "";
+  const isAllowedOrigin = allowedOrigins.includes(origin);
+
+  const preflightHeaders = {
+    ...(isAllowedOrigin && { "Access-Control-Allow-Origin": origin }),
+    ...corsOptions,
+  };
+  return NextResponse.json({}, { headers: preflightHeaders });
 };
