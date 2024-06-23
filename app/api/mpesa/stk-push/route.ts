@@ -4,8 +4,6 @@ import { db } from "@/app/db/drizzle-client";
 import { stkPushRequest } from "@/daraja/stk-push";
 import { allowedOrigins, corsOptions } from "@/utils/cors";
 
-const MPESA_APP_BASE_URL = process.env.APP_BASE_URL;
-
 type RequestBody = {
   accountReference: string;
   amount: string;
@@ -20,9 +18,9 @@ export const POST = async (request: NextRequest) => {
   const requestBody: RequestBody = {
     accountReference,
     amount,
-    callbackURL: `${MPESA_APP_BASE_URL}/api/mpesa/stk-push-callback`,
+    callbackURL: `https://billing.kenyahmis.org/api/mpesa/stk-push-callback`,
     phoneNumber,
-    transactionDesc: "SOME DESCRIPTION",
+    transactionDesc: "HMIS Payment",
   };
 
   const mfl = requestBody.accountReference.substring(0, 5);
