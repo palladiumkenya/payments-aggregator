@@ -18,7 +18,7 @@ export const POST = async (request: NextRequest) => {
   const requestBody: RequestBody = {
     accountReference,
     amount,
-    callbackURL: `https://billing.kenyahmis.org/api/mpesa/stk-push-callback`,
+    callbackURL: `${process.env.MPESA_APP_BASE_URL}/api/mpesa/stk-push-callback`,
     phoneNumber,
     transactionDesc: "HMIS Payment",
   };
