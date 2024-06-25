@@ -4,6 +4,7 @@ import { db } from "@/app/db/drizzle-client";
 import { stkPushRequest } from "@/daraja/stk-push";
 import { allowedOrigins, corsOptions } from "@/utils/cors";
 import { MPESA_APP_BASE_URL } from "@/config/env";
+import { getHealthFacilityMpesaConfig } from "@/config/mpesa-config";
 
 type RequestBody = {
   accountReference: string;
@@ -30,8 +31,20 @@ export const POST = async (request: NextRequest) => {
     requestBody.accountReference.indexOf("-")
   );
 
+  const healthFacilityMpesaConfig = getHealthFacilityMpesaConfig(mfl);
+
+  if (!healthFacilityMpesaConfig) {
+    return NextResponse.json(
+      { message: "Health facility M-PESA data not configured." },
+      { status: 403 }
+    );
+  }
+
   try {
-    const stkPushRes = await stkPushRequest(requestBody);
+    const stkPushRes = await stkPushRequest(
+      requestBody,
+      healthFacilityMpesaConfig
+    );
 
     const res = await db
       .insert(payments)

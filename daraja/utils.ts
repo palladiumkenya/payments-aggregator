@@ -1,4 +1,4 @@
-import { BUSINESS_SHORT_CODE, PASSKEY } from "./config";
+import { MPESA_CONFIG } from "@/config/mpesa-config";
 
 /**
  * Generates a timestamp in the format of YEAR+MONTH+DATE+HOUR+MINUTE+SECOND (YYYYMMDDHHMMSS).
@@ -17,13 +17,12 @@ export function generateTimestamp(): string {
   return `${year}${month}${date}${hours}${minutes}${seconds}`;
 }
 
-export const generatePassword = (): string => {
-  const businessShortCode = BUSINESS_SHORT_CODE;
-  const passkey = PASSKEY;
+export const generatePassword = (mpesaConfig: MPESA_CONFIG): string => {
+  const { MPESA_BUSINESS_SHORT_CODE, MPESA_API_PASS_KEY } = mpesaConfig;
 
   const timestamp = generateTimestamp();
 
-  const concatenatedString = `${businessShortCode}${passkey}${timestamp}`;
+  const concatenatedString = `${MPESA_BUSINESS_SHORT_CODE}${MPESA_API_PASS_KEY}${timestamp}`;
 
   // Check if the environment is Node.js
   if (typeof btoa === "undefined") {

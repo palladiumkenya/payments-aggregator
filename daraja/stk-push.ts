@@ -1,7 +1,6 @@
 import axios from "axios";
-
 import { generateTimestamp, generatePassword } from "./utils";
-import { BASE_URL, BUSINESS_SHORT_CODE, ENVIRONMENT } from "./config";
+import { BASE_URL, ENVIRONMENT } from "../config/env";
 import { generateAccessToken } from "./access-token";
 
 import {
@@ -13,7 +12,9 @@ import {
   STKPushBody,
   TransactionType,
   STKPushResponse,
+  BusinessShortCode,
 } from "daraja-kit";
+import { MPESA_CONFIG } from "@/config/mpesa-config";
 
 export type STKPushRequestParam = {
   phoneNumber: PhoneNumber;
@@ -23,21 +24,26 @@ export type STKPushRequestParam = {
   accountReference: AccountReference;
 };
 
-export const stkPushRequest = async ({
-  phoneNumber,
-  amount,
-  callbackURL,
-  transactionDesc,
-  accountReference,
-}: STKPushRequestParam) => {
+export const stkPushRequest = async (
+  {
+    phoneNumber,
+    amount,
+    callbackURL,
+    transactionDesc,
+    accountReference,
+  }: STKPushRequestParam,
+  mpesaConfig: MPESA_CONFIG
+) => {
+  const { MPESA_BUSINESS_SHORT_CODE } = mpesaConfig;
+
   try {
     const timestamp = generateTimestamp();
 
-    const password = generatePassword();
+    const password = generatePassword(mpesaConfig);
 
     const stkPushBody: STKPushBody = {
-      BusinessShortCode: BUSINESS_SHORT_CODE!,
-      PartyB: BUSINESS_SHORT_CODE!,
+      BusinessShortCode: MPESA_BUSINESS_SHORT_CODE,
+      PartyB: MPESA_BUSINESS_SHORT_CODE,
       Timestamp: timestamp,
       Password: password,
       PartyA: phoneNumber,
@@ -50,7 +56,7 @@ export const stkPushRequest = async ({
       AccountReference: accountReference,
     };
 
-    const accessTokenResponse = await generateAccessToken();
+    const accessTokenResponse = await generateAccessToken(mpesaConfig);
 
     const res = await axios.post<STKPushResponse>(
       `${BASE_URL}/mpesa/stkpush/v1/processrequest`,
