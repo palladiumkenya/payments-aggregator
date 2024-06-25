@@ -3,6 +3,7 @@ import { payments } from "@/app/db/schema";
 import { db } from "@/app/db/drizzle-client";
 import { stkPushRequest } from "@/daraja/stk-push";
 import { allowedOrigins, corsOptions } from "@/utils/cors";
+import { MPESA_APP_BASE_URL } from "@/config/env";
 
 type RequestBody = {
   accountReference: string;
@@ -18,7 +19,7 @@ export const POST = async (request: NextRequest) => {
   const requestBody: RequestBody = {
     accountReference,
     amount,
-    callbackURL: `${process.env.MPESA_APP_BASE_URL}/api/mpesa/stk-push-callback`,
+    callbackURL: `${MPESA_APP_BASE_URL}/api/mpesa/stk-push-callback`,
     phoneNumber,
     transactionDesc: "HMIS Payment",
   };
