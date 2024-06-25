@@ -7,12 +7,12 @@ export type MPESA_CONFIG = {
   MPESA_API_PASS_KEY: string;
 };
 
+// HASHMAP
+const mpesaConfigMap: { [key: string]: MPESA_CONFIG } = configData;
+
 export const getHealthFacilityMpesaConfig = (
   mfl: string
 ): MPESA_CONFIG | undefined => {
-  if (!configData) {
-    throw new Error("Config data not found.");
-  }
-  const config = configData.find((c) => c.mfl === mfl);
+  const config = mpesaConfigMap[mfl];
   return config;
 };
