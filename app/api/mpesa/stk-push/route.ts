@@ -4,6 +4,7 @@ import { db } from "@/app/db/drizzle-client";
 import { stkPushRequest } from "@/daraja/stk-push";
 import { allowedOrigins, corsOptions } from "@/utils/cors";
 import { MPESA_APP_BASE_URL } from "@/config/env";
+import { getHealthFacilityMpesaConfig } from "@/config/mpesa-config";
 
 type RequestBody = {
   accountReference: string;
@@ -19,7 +20,7 @@ export const POST = async (request: NextRequest) => {
   const requestBody: RequestBody = {
     accountReference,
     amount,
-    callbackURL: `${MPESA_APP_BASE_URL}/api/mpesa/stk-push-callback`,
+    callbackURL: `${MPESA_APP_BASE_URL}/api/stk-push-callback`,
     phoneNumber,
     transactionDesc: "HMIS Payment",
   };
@@ -30,10 +31,35 @@ export const POST = async (request: NextRequest) => {
     requestBody.accountReference.indexOf("-")
   );
 
-  try {
-    const stkPushRes = await stkPushRequest(requestBody);
+  const healthFacilityMpesaConfig = getHealthFacilityMpesaConfig(mfl);
 
-    const res = await db
+  if (!healthFacilityMpesaConfig) {
+    const res = NextResponse.json(
+      { message: "Health facility M-PESA data not configured." },
+      { status: 403 }
+    );
+
+    const origin = request.headers.get("origin") ?? "";
+    const isAllowedOrigin = allowedOrigins.includes(origin);
+
+    if (isAllowedOrigin) {
+      res.headers.set("Access-Control-Allow-Origin", origin);
+    }
+
+    Object.entries(corsOptions).forEach(([key, value]) => {
+      res.headers.set(key, value);
+    });
+
+    return res;
+  }
+
+  try {
+    const stkPushRes = await stkPushRequest(
+      requestBody,
+      healthFacilityMpesaConfig
+    );
+
+    const dbRes = await db
       .insert(payments)
       .values({
         mfl,
@@ -46,13 +72,12 @@ export const POST = async (request: NextRequest) => {
       .returning({ requestId: payments.id });
 
     const response = NextResponse.json(
-      { requestId: res.at(0)?.requestId },
+      { requestId: dbRes.at(0)?.requestId },
       {
         status: 200,
       }
     );
 
-    // Handling cors
     const origin = request.headers.get("origin") ?? "";
     const isAllowedOrigin = allowedOrigins.includes(origin);
 

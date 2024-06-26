@@ -1,10 +1,14 @@
 import axios from "axios";
-import { BASE_URL, CONSUMER_KEY, CONSUMER_SECRET } from "./config";
+import { BASE_URL } from "../config/env";
 import cache from "memory-cache";
 import { AccessTokenResponse } from "daraja-kit";
+import { MPESA_CONFIG } from "@/config/mpesa-config";
 
-export const generateAccessToken = async (): Promise<AccessTokenResponse> => {
-  const credentials = `${CONSUMER_KEY}:${CONSUMER_SECRET}`;
+export const generateAccessToken = async (
+  mpesaConfig: MPESA_CONFIG
+): Promise<AccessTokenResponse> => {
+  const { MPESA_CONSUMER_KEY, MPESA_CONSUMER_SECRET } = mpesaConfig;
+  const credentials = `${MPESA_CONSUMER_KEY}:${MPESA_CONSUMER_SECRET}`;
   const encodedAuthString = Buffer.from(credentials).toString("base64");
 
   const token: AccessTokenResponse = cache.get("act");
