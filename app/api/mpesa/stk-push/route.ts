@@ -34,10 +34,23 @@ export const POST = async (request: NextRequest) => {
   const healthFacilityMpesaConfig = getHealthFacilityMpesaConfig(mfl);
 
   if (!healthFacilityMpesaConfig) {
-    return NextResponse.json(
+    const res = NextResponse.json(
       { message: "Health facility M-PESA data not configured." },
       { status: 403 }
     );
+
+    const origin = request.headers.get("origin") ?? "";
+    const isAllowedOrigin = allowedOrigins.includes(origin);
+
+    if (isAllowedOrigin) {
+      res.headers.set("Access-Control-Allow-Origin", origin);
+    }
+
+    Object.entries(corsOptions).forEach(([key, value]) => {
+      res.headers.set(key, value);
+    });
+
+    return res;
   }
 
   try {
@@ -46,7 +59,7 @@ export const POST = async (request: NextRequest) => {
       healthFacilityMpesaConfig
     );
 
-    const res = await db
+    const dbRes = await db
       .insert(payments)
       .values({
         mfl,
@@ -59,7 +72,7 @@ export const POST = async (request: NextRequest) => {
       .returning({ requestId: payments.id });
 
     const response = NextResponse.json(
-      { requestId: res.at(0)?.requestId },
+      { requestId: dbRes.at(0)?.requestId },
       {
         status: 200,
       }
