@@ -20,7 +20,7 @@ export const POST = async (request: NextRequest) => {
   const requestBody: RequestBody = {
     accountReference,
     amount,
-    callbackURL: `${MPESA_APP_BASE_URL}/api/mpesa/stk-push-callback`,
+    callbackURL: `${MPESA_APP_BASE_URL}/api/stk-push-callback`,
     phoneNumber,
     transactionDesc: "HMIS Payment",
   };
@@ -78,7 +78,6 @@ export const POST = async (request: NextRequest) => {
       }
     );
 
-    // Handling cors
     const origin = request.headers.get("origin") ?? "";
     const isAllowedOrigin = allowedOrigins.includes(origin);
 
