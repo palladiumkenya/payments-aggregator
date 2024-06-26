@@ -41,3 +41,11 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 touch .env
 cp .env.example .env
 ```
+
+## mpesa configuration
+
+```
+touch mpesa-config.json
+cp mpesa-config-example.json mpesa-config.json
+
+```
