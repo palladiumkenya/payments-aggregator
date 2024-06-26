@@ -34,6 +34,8 @@ const safaricomOrigins = [
 ];
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
+  console.log("request", req);
+
   const received: STKPushSuccessfulCallbackBody = await req.json();
 
   const origin = req.headers.get("origin") ?? "";
