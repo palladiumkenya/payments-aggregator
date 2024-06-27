@@ -39,7 +39,7 @@ export const stkPushRequest = async (
   try {
     const timestamp = generateTimestamp();
 
-    const password = generatePassword(mpesaConfig);
+    const password = generatePassword(mpesaConfig, timestamp);
 
     const stkPushBody: STKPushBody = {
       BusinessShortCode: MPESA_BUSINESS_SHORT_CODE,
@@ -70,8 +70,6 @@ export const stkPushRequest = async (
 
     return res.data;
   } catch (err: any) {
-    console.error(err);
-
     throw new Error(
       `Error occurred with status code ${err.response?.status}, ${err.response?.statusText}`
     );

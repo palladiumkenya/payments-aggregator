@@ -17,21 +17,29 @@ export function generateTimestamp(): string {
   return `${year}${month}${date}${hours}${minutes}${seconds}`;
 }
 
-export const generatePassword = (mpesaConfig: MPESA_CONFIG): string => {
+export const generatePassword = (
+  mpesaConfig: MPESA_CONFIG,
+  timestamp: string
+): string => {
   const { MPESA_BUSINESS_SHORT_CODE, MPESA_API_PASS_KEY } = mpesaConfig;
 
-  const timestamp = generateTimestamp();
-
   const concatenatedString = `${MPESA_BUSINESS_SHORT_CODE}${MPESA_API_PASS_KEY}${timestamp}`;
+  const encodedString = Buffer.from(concatenatedString).toString("base64");
 
-  // Check if the environment is Node.js
-  if (typeof btoa === "undefined") {
-    // Node.js environment
-    const encodedString = Buffer.from(concatenatedString).toString("base64");
-    return encodedString;
-  } else {
-    // Browser environment
-    const encodedString = btoa(concatenatedString);
-    return encodedString;
-  }
+  return encodedString;
 };
+
+// {
+//   "BusinessShortCode": "174379",
+//   "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMTYwMjE2MTY1NjI3",
+//   "Password" : 'NzYxNzcyMGM0Njg3Yzc2NDU3NjAzYzU4OGY3NjFiYTZhZGMzYTNjYWRmMjZkODBmYWM3YTNiZjJjYjI1ZjhkYmNmYTIyNTYyMDI0MDYyNzE3MjE0Mw==',
+//   "Timestamp":"20160216165627",
+//   "TransactionType": "CustomerPayBillOnline",
+//   "Amount": "1",
+//   "PartyA":"254708374149",
+//   "PartyB":"174379",
+//   "PhoneNumber":"254708374149",
+//   "CallBackURL": "https://mydomain.com/pat",
+//   "AccountReference":"Test",
+//   "TransactionDesc":"Test"
+// }
