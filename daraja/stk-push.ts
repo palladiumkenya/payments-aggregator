@@ -58,9 +58,6 @@ export const stkPushRequest = async (
 
     const accessTokenResponse = await generateAccessToken(mpesaConfig);
 
-    console.log(accessTokenResponse.access_token);
-    console.log(stkPushBody);
-
     const res = await axios.post<STKPushResponse>(
       `${BASE_URL}/mpesa/stkpush/v1/processrequest`,
       stkPushBody,
@@ -73,8 +70,6 @@ export const stkPushRequest = async (
 
     return res.data;
   } catch (err: any) {
-    console.error("stk-push-error", err);
-
     throw new Error(
       `Error occurred with status code ${err.response?.status}, ${err.response?.statusText}`
     );
