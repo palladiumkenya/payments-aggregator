@@ -91,7 +91,6 @@ export const POST = async (request: NextRequest) => {
 
     return response;
   } catch (err: any) {
-    console.error(err);
     return NextResponse.json(
       {
         message: "An error occurred",

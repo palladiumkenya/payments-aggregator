@@ -1,4 +1,5 @@
 import configData from "../mpesa-config.json";
+import { assertValue } from "./env";
 
 export type MPESA_CONFIG = {
   MPESA_BUSINESS_SHORT_CODE: string;
@@ -8,7 +9,10 @@ export type MPESA_CONFIG = {
 };
 
 // HASHMAP
-const mpesaConfigMap: { [key: string]: MPESA_CONFIG } = configData;
+const mpesaConfigMap: { [key: string]: MPESA_CONFIG } = assertValue(
+  configData,
+  "MISSING MPESA CONFIGURATION FILE"
+);
 
 export const getHealthFacilityMpesaConfig = (
   mfl: string

@@ -18,7 +18,7 @@ export const MPESA_APP_BASE_URL = assertValue(
   "Missing environment variable: MPESA_APP_BASE_URL"
 );
 
-function assertValue<T>(v: T | undefined, errorMessage: string): T {
+export function assertValue<T>(v: T | undefined, errorMessage: string): T {
   if (v === undefined) {
     throw new Error(errorMessage);
   }
