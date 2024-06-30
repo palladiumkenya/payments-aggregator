@@ -28,18 +28,3 @@ export const generatePassword = (
 
   return encodedString;
 };
-
-// {
-//   "BusinessShortCode": "174379",
-//   "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMTYwMjE2MTY1NjI3",
-//   "Password" : 'NzYxNzcyMGM0Njg3Yzc2NDU3NjAzYzU4OGY3NjFiYTZhZGMzYTNjYWRmMjZkODBmYWM3YTNiZjJjYjI1ZjhkYmNmYTIyNTYyMDI0MDYyNzE3MjE0Mw==',
-//   "Timestamp":"20160216165627",
-//   "TransactionType": "CustomerPayBillOnline",
-//   "Amount": "1",
-//   "PartyA":"254708374149",
-//   "PartyB":"174379",
-//   "PhoneNumber":"254708374149",
-//   "CallBackURL": "https://mydomain.com/pat",
-//   "AccountReference":"Test",
-//   "TransactionDesc":"Test"
-// }
