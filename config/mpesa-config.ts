@@ -18,7 +18,7 @@ export const getHealthFacilityMpesaConfig = (
   mfl: string
 ): MPESA_CONFIG | undefined => {
   if (ENVIRONMENT === "development") {
-    return mpesaConfigMap["15339"];
+    return mpesaConfigMap["DEV"];
   }
 
   const config = mpesaConfigMap[mfl];
