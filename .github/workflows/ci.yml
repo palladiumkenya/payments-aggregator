@@ -29,7 +29,7 @@ jobs:
           git clone -b main https://github.com/palladiumkenya/payments-aggregator.git "$deploy_dir"
           
           # Copy configuration files
-          cp /apps/workflowConfigs/payments-aggregator/.env "$deploy_dir/"
+          cp /apps/workflowConfigs/payments-aggregator/mpesa-config.json "$deploy_dir/"
           
           # Build and run Docker container
           docker stop payments_aggregator || true
