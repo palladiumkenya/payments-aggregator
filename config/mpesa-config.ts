@@ -1,5 +1,5 @@
 import configData from "../mpesa-config.json";
-import { assertValue } from "./env";
+import { ENVIRONMENT, assertValue } from "./env";
 
 export type MPESA_CONFIG = {
   MPESA_BUSINESS_SHORT_CODE: string;
@@ -17,6 +17,10 @@ const mpesaConfigMap: { [key: string]: MPESA_CONFIG } = assertValue(
 export const getHealthFacilityMpesaConfig = (
   mfl: string
 ): MPESA_CONFIG | undefined => {
+  if (ENVIRONMENT === "development") {
+    return mpesaConfigMap["DEV"];
+  }
+
   const config = mpesaConfigMap[mfl];
   return config;
 };
