@@ -38,3 +38,5 @@ yarn-error.log*
 next-env.d.ts
 
 mpesa-config.json
+mpesa-config-prod.json
+mpesa-config-dev.json
