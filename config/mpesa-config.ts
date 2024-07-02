@@ -1,5 +1,5 @@
 import configData from "../mpesa-config.json";
-import { assertValue } from "./env";
+import { ENVIRONMENT, assertValue } from "./env";
 
 export type MPESA_CONFIG = {
   MPESA_BUSINESS_SHORT_CODE: string;
@@ -17,6 +17,11 @@ const mpesaConfigMap: { [key: string]: MPESA_CONFIG } = assertValue(
 export const getHealthFacilityMpesaConfig = (
   mfl: string
 ): MPESA_CONFIG | undefined => {
+  // For dev just use the normal credentials without the mfl really mattering.
+  if (ENVIRONMENT === "development") {
+    return Object.values(mpesaConfigMap)[0];
+  }
+
   const config = mpesaConfigMap[mfl];
   return config;
 };
