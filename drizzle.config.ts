@@ -1,17 +1,27 @@
 import { defineConfig } from "drizzle-kit";
 
 import dotenv from "dotenv";
+import {
+  DATABASE_HOST,
+  DATABASE_NAME,
+  DATABASE_PASSWORD,
+  DATABASE_USER,
+  DB_URL,
+} from "./config/env";
 
 dotenv.config({
-  path: ".env.local",
+  path: ".env",
 });
 
 export default defineConfig({
   schema: "./app/db/schema.ts",
-  dialect: "sqlite",
-  driver: "turso",
+  dialect: "mysql",
+  out: "./drizzle",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
-    authToken: process.env.DATABASE_AUTH_TOKEN,
+    url: DB_URL,
+    database: DATABASE_NAME,
+    host: DATABASE_HOST,
+    password: DATABASE_PASSWORD,
+    user: DATABASE_USER,
   },
 });

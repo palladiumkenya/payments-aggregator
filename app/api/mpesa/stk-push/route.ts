@@ -59,20 +59,17 @@ export const POST = async (request: NextRequest) => {
       healthFacilityMpesaConfig
     );
 
-    const dbRes = await db
-      .insert(payments)
-      .values({
-        mfl,
-        billId,
-        status: "INITIATED",
-        amount: requestBody.amount,
-        phoneNumber: requestBody.phoneNumber,
-        merchantReqId: stkPushRes.MerchantRequestID,
-      })
-      .returning({ requestId: payments.id });
+    const dbRes = await db.insert(payments).values({
+      mfl,
+      billId,
+      status: "INITIATED",
+      amount: requestBody.amount,
+      phoneNumber: requestBody.phoneNumber,
+      merchantReqId: stkPushRes.MerchantRequestID,
+    });
 
     const response = NextResponse.json(
-      { requestId: dbRes.at(0)?.requestId },
+      { requestId: dbRes[0].insertId },
       {
         status: 200,
       }

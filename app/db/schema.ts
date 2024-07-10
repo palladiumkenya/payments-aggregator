@@ -1,8 +1,16 @@
 import { sql } from "drizzle-orm";
-import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+import {
+  int,
+  text,
+  mysqlSchema,
+  mysqlTable,
+  timestamp,
+} from "drizzle-orm/mysql-core";
 
-export const payments = sqliteTable("payments", {
-  id: integer("id").notNull().primaryKey(),
+export const schema = mysqlSchema("payments_schema");
+
+export const payments = mysqlTable("payments", {
+  id: int("id").primaryKey().autoincrement(),
   mfl: text("mfl").notNull(),
   billId: text("bill_id").notNull(),
   amount: text("amount").notNull(),
@@ -12,10 +20,6 @@ export const payments = sqliteTable("payments", {
   }).notNull(),
   merchantReqId: text("merchant_req_id"),
   receiptNumber: text("receipt_number"),
-  createdAt: text("created_at")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: text("updated_at")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
