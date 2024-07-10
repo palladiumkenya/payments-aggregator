@@ -6,14 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "studio": "drizzle-kit studio",
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@libsql/client": "^0.6.2",
+    "@libsql/client": "^0.7.0",
     "daraja-kit": "^1.0.3",
     "dotenv": "^16.4.5",
-    "drizzle-orm": "^0.31.2",
-    "mysql2": "^3.10.1",
+    "drizzle-orm": "^0.31.4",
+    "mysql2": "^3.10.2",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18"

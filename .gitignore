@@ -40,3 +40,6 @@ next-env.d.ts
 mpesa-config.json
 mpesa-config-prod.json
 mpesa-config-dev.json
+
+# drizzle
+drizzle
