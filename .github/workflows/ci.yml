@@ -34,6 +34,6 @@ jobs:
           
           # Build and run Docker container
           docker stop payments_aggregator || true
-          docker rm payments_aggregator || true
+          docker rm -f payments_aggregator || true
           docker build -t payments_aggregator:latest "$deploy_dir"
           docker run -p 7332:3000 --name payments_aggregator -d --restart always payments_aggregator:latest
