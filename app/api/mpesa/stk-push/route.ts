@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { payments } from "@/app/db/schema";
 import { db } from "@/app/db/drizzle-client";
 import { stkPushRequest } from "@/daraja/stk-push";
-import { allowedOrigins, corsOptions } from "@/utils/cors";
+import { allowedOrigins, corsOptions, setCorsHeaders } from "@/utils/cors";
 import { MPESA_APP_BASE_URL } from "@/config/env";
 import { getHealthFacilityMpesaConfig } from "@/config/mpesa-config";
 
@@ -12,6 +12,17 @@ type RequestBody = {
   phoneNumber: string;
   transactionDesc: string;
   callbackURL: string;
+};
+
+export const OPTIONS = async (request: NextRequest) => {
+  const origin = request.headers.get("origin") ?? "";
+  const isAllowedOrigin = allowedOrigins.includes(origin);
+
+  const preflightHeaders = {
+    ...(isAllowedOrigin && { "Access-Control-Allow-Origin": origin }),
+    ...corsOptions,
+  };
+  return NextResponse.json({}, { headers: preflightHeaders });
 };
 
 export const POST = async (request: NextRequest) => {
@@ -24,6 +35,8 @@ export const POST = async (request: NextRequest) => {
     phoneNumber,
     transactionDesc: "HMIS Payment",
   };
+
+  const origin = request.headers.get("origin") ?? "";
 
   const mfl = requestBody.accountReference.substring(0, 5);
   const billId = requestBody.accountReference.substring(
@@ -75,20 +88,9 @@ export const POST = async (request: NextRequest) => {
       }
     );
 
-    const origin = request.headers.get("origin") ?? "";
-    const isAllowedOrigin = allowedOrigins.includes(origin);
-
-    if (isAllowedOrigin) {
-      response.headers.set("Access-Control-Allow-Origin", origin);
-    }
-
-    Object.entries(corsOptions).forEach(([key, value]) => {
-      response.headers.set(key, value);
-    });
-
-    return response;
+    return setCorsHeaders(response, origin);
   } catch (err: any) {
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         message: "An error occurred",
       },
@@ -96,16 +98,7 @@ export const POST = async (request: NextRequest) => {
         status: 500,
       }
     );
+
+    return setCorsHeaders(response, origin);
   }
-};
-
-export const OPTIONS = async (request: NextRequest) => {
-  const origin = request.headers.get("origin") ?? "";
-  const isAllowedOrigin = allowedOrigins.includes(origin);
-
-  const preflightHeaders = {
-    ...(isAllowedOrigin && { "Access-Control-Allow-Origin": origin }),
-    ...corsOptions,
-  };
-  return NextResponse.json({}, { headers: preflightHeaders });
 };
