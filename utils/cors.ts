@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 export const allowedOrigins = [
   "https://dev.kenyahmis.org",
   "http://localhost:8700",
+  "https://uat.kenyahmis.org",
 ];
 
 export const corsOptions = {

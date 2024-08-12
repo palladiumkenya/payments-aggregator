@@ -52,18 +52,7 @@ export const POST = async (request: NextRequest) => {
       { status: 403 }
     );
 
-    const origin = request.headers.get("origin") ?? "";
-    const isAllowedOrigin = allowedOrigins.includes(origin);
-
-    if (isAllowedOrigin) {
-      res.headers.set("Access-Control-Allow-Origin", origin);
-    }
-
-    Object.entries(corsOptions).forEach(([key, value]) => {
-      res.headers.set(key, value);
-    });
-
-    return res;
+    return setCorsHeaders(res, origin);
   }
 
   try {
@@ -90,13 +79,11 @@ export const POST = async (request: NextRequest) => {
 
     return setCorsHeaders(response, origin);
   } catch (err: any) {
+    console.error("Error inserting payment or processing request:", err);
+
     const response = NextResponse.json(
-      {
-        message: "An error occurred",
-      },
-      {
-        status: 500,
-      }
+      { message: "An error occurred while processing the request." },
+      { status: 500 }
     );
 
     return setCorsHeaders(response, origin);
