@@ -70,6 +70,7 @@ export const stkPushRequest = async (
 
     return res.data;
   } catch (err: any) {
+    console.error("stk-push-error", err);
     throw new Error(
       `Error occurred with status code ${err.response?.status}, ${err.response?.statusText}`
     );
