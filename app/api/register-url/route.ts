@@ -23,7 +23,7 @@ export const POST = async (req: NextRequest) => {
   const res: RegisterUrlResponse = await axios.post(
     `${BASE_URL}/mpesa/c2b/v1/registerurl`,
     {
-      ShortCode: facilityMpesaConfig.MPESA_BUSINESS_SHORT_CODE,
+      ShortCode: parseInt(facilityMpesaConfig.MPESA_BUSINESS_SHORT_CODE),
       ResponseType: "Completed",
       ConfirmationURL: `${BASE_URL}/api/confirmation`,
       ValidationURL: `${BASE_URL}/api/validation`,
