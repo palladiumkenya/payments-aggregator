@@ -8,11 +8,6 @@ export const BASE_URL =
     ? "https://api.safaricom.co.ke"
     : "https://sandbox.safaricom.co.ke";
 
-export const MPESA_TRANSACTION_TYPE = assertValue(
-  process.env.MPESA_TRANSACTION_TYPE,
-  "Missing environment variable: MPESA_TRANSACTION_TYPE"
-);
-
 export const MPESA_APP_BASE_URL = assertValue(
   process.env.MPESA_APP_BASE_URL,
   "Missing environment variable: MPESA_APP_BASE_URL"
