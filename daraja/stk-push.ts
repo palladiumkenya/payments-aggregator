@@ -34,7 +34,11 @@ export const stkPushRequest = async (
   }: STKPushRequestParam,
   mpesaConfig: MPESA_CONFIG
 ) => {
-  const { MPESA_BUSINESS_SHORT_CODE } = mpesaConfig;
+  const {
+    MPESA_BUSINESS_SHORT_CODE,
+    MPESA_TILL_OR_PAYBILL_NO,
+    MPESA_TRANSACTION_TYPE,
+  } = mpesaConfig;
 
   try {
     const timestamp = generateTimestamp();
@@ -43,7 +47,7 @@ export const stkPushRequest = async (
 
     const stkPushBody: STKPushBody = {
       BusinessShortCode: MPESA_BUSINESS_SHORT_CODE,
-      PartyB: MPESA_BUSINESS_SHORT_CODE,
+      PartyB: MPESA_TILL_OR_PAYBILL_NO,
       Timestamp: timestamp,
       Password: password,
       PartyA: phoneNumber,
@@ -51,10 +55,14 @@ export const stkPushRequest = async (
       Amount: ENVIRONMENT === "production" ? amount : "1",
       CallBackURL: callbackURL,
       TransactionDesc: transactionDesc,
-      TransactionType: process.env
-        .MPESA_TRANSACTION_TYPE as unknown as TransactionType,
+      TransactionType:
+        MPESA_TRANSACTION_TYPE === "BUY-GOODS"
+          ? "CustomerBuyGoodsOnline"
+          : "CustomerPayBillOnline",
       AccountReference: accountReference,
     };
+
+    console.log("stk-push-body", stkPushBody);
 
     const accessTokenResponse = await generateAccessToken(mpesaConfig);
 
