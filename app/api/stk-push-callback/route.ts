@@ -37,13 +37,13 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   const received: STKPushSuccessfulCallbackBody = await req.json();
 
   const origin = req.headers.get("origin") ?? "";
-  const isAllowedOrigin = [...allowedOrigins, ...safaricomOrigins].includes(
-    origin
-  );
+  // const isAllowedOrigin = [...allowedOrigins, ...safaricomOrigins].includes(
+  //   origin
+  // );
 
-  const tempIsAllowedOrigin = true;
+  const isAllowedOrigin = true;
 
-  if (!tempIsAllowedOrigin) {
+  if (!isAllowedOrigin) {
     return NextResponse.json({ message: "NOT-ALLOWED" }, { status: 401 });
   }
 
