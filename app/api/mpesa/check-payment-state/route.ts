@@ -34,7 +34,8 @@ export const POST = async (req: NextRequest) => {
     }
 
     const origin = req.headers.get("origin") ?? "";
-    const isAllowedOrigin = allowedOrigins.includes(origin);
+    // const isAllowedOrigin = allowedOrigins.includes(origin);
+    const isAllowedOrigin = true;
 
     if (isAllowedOrigin) {
       response.headers.set("Access-Control-Allow-Origin", origin);
@@ -59,7 +60,8 @@ export const POST = async (req: NextRequest) => {
 
 export const OPTIONS = async (request: NextRequest) => {
   const origin = request.headers.get("origin") ?? "";
-  const isAllowedOrigin = allowedOrigins.includes(origin);
+  // const isAllowedOrigin = allowedOrigins.includes(origin);
+  const isAllowedOrigin = true;
 
   const preflightHeaders = {
     ...(isAllowedOrigin && { "Access-Control-Allow-Origin": origin }),

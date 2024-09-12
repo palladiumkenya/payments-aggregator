@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 
-//TODO find the URL used in production and add it here
-
 export const allowedOrigins = [
   "https://dev.kenyahmis.org",
   "http://localhost:8700",
@@ -14,7 +12,8 @@ export const corsOptions = {
 };
 
 export const setCorsHeaders = (response: NextResponse, origin: string) => {
-  const isAllowedOrigin = allowedOrigins.includes(origin);
+  // const isAllowedOrigin = allowedOrigins.includes(origin);
+  const isAllowedOrigin = true;
 
   if (isAllowedOrigin) {
     response.headers.set("Access-Control-Allow-Origin", origin);

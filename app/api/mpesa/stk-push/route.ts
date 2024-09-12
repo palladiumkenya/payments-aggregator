@@ -16,7 +16,8 @@ type RequestBody = {
 
 export const OPTIONS = async (request: NextRequest) => {
   const origin = request.headers.get("origin") ?? "";
-  const isAllowedOrigin = allowedOrigins.includes(origin);
+  // const isAllowedOrigin = allowedOrigins.includes(origin);
+  const isAllowedOrigin = true;
 
   const preflightHeaders = {
     ...(isAllowedOrigin && { "Access-Control-Allow-Origin": origin }),
