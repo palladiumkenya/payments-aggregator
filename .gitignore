@@ -43,3 +43,8 @@ mpesa-config-dev.json
 
 # drizzle
 drizzle
+
+local.txt
+.vscode
+local-prod.json
+local-dev.json
