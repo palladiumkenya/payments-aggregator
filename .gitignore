@@ -46,3 +46,5 @@ drizzle
 
 local.txt
 .vscode
+local-prod.json
+local-dev.json
