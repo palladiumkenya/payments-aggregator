@@ -1,6 +1,11 @@
 import configData from "../mpesa-config.json";
 import { ENVIRONMENT, assertValue } from "./env";
 
+export type Config = {
+  NATIVE: { [key: string]: MPESA_CONFIG };
+  KCB: { [key: string]: KCB_CONFIG };
+};
+
 export type MPESA_CONFIG = {
   MPESA_BUSINESS_SHORT_CODE: string;
   MPESA_CONSUMER_KEY: string;
@@ -10,19 +15,21 @@ export type MPESA_CONFIG = {
   MPESA_TRANSACTION_TYPE: "BUY-GOODS" | "PAYBILL";
 };
 
-// HASHMAP
-const mpesaConfigMap: { [key: string]: MPESA_CONFIG } = assertValue(
-  configData as { [key: string]: MPESA_CONFIG },
-  "MISSING MPESA CONFIGURATION FILE"
+export type KCB_CONFIG = {
+  ACCOUNT_REFERENCE: string;
+  KCB_SHORT_CODE: string;
+  KCB_CONSUMER_KEY: string;
+  KCB_CONSUMER_SECRET: string;
+};
+
+const config: Config = assertValue(
+  configData as Config,
+  "MISSING CONFIGURATION FILE"
 );
 
 export const getHealthFacilityMpesaConfig = (
   mfl: string
-): MPESA_CONFIG | undefined => {
-  if (ENVIRONMENT === "development") {
-    return mpesaConfigMap["DEV"];
-  }
-
-  const config = mpesaConfigMap[mfl];
-  return config;
+): MPESA_CONFIG | KCB_CONFIG | undefined => {
+  const facilityConfig = config.NATIVE[mfl] ?? config.KCB[mfl];
+  return facilityConfig;
 };

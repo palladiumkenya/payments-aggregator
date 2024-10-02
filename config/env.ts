@@ -3,10 +3,14 @@ export const ENVIRONMENT = assertValue<"production" | "development">(
   "Missing environment variable: ENVIRONMENT"
 );
 
-export const BASE_URL =
+export const SAFARICOM_BASE_URL =
   ENVIRONMENT === "production"
     ? "https://api.safaricom.co.ke"
     : "https://sandbox.safaricom.co.ke";
+
+// TODO find out the production URL
+export const KCB_BASE_URL =
+  ENVIRONMENT === "production" ? "" : "https://uat.buni.kcbgroup.com";
 
 export const MPESA_APP_BASE_URL = assertValue(
   process.env.MPESA_APP_BASE_URL,

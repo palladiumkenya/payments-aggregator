@@ -1,6 +1,5 @@
 import { db } from "@/app/db/drizzle-client";
 import { payments } from "@/app/db/schema";
-import { allowedOrigins } from "@/utils/cors";
 import { STKPushSuccessfulCallbackBody } from "daraja-kit";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -37,7 +36,8 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   const received: STKPushSuccessfulCallbackBody = await req.json();
 
   const origin = req.headers.get("origin") ?? "";
-  // const isAllowedOrigin = [...allowedOrigins, ...safaricomOrigins].includes(
+  // TODO limit what can send here.
+  // const isAllowedOrigin = safaricomOrigins.includes(
   //   origin
   // );
 

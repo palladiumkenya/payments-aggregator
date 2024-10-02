@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { payments } from "@/app/db/schema";
 import { db } from "@/app/db/drizzle-client";
-import { stkPushRequest } from "@/daraja/stk-push";
-import { allowedOrigins, corsOptions, setCorsHeaders } from "@/utils/cors";
+import { payments } from "@/app/db/schema";
 import { MPESA_APP_BASE_URL } from "@/config/env";
 import { getHealthFacilityMpesaConfig } from "@/config/mpesa-config";
+import { stkPushRequest } from "@/daraja/stk-push";
+import { corsOptions, setCorsHeaders } from "@/utils/cors";
+import { NextRequest, NextResponse } from "next/server";
 
 type RequestBody = {
   accountReference: string;
@@ -16,7 +16,6 @@ type RequestBody = {
 
 export const OPTIONS = async (request: NextRequest) => {
   const origin = request.headers.get("origin") ?? "";
-  // const isAllowedOrigin = allowedOrigins.includes(origin);
   const isAllowedOrigin = true;
 
   const preflightHeaders = {
@@ -49,7 +48,7 @@ export const POST = async (request: NextRequest) => {
 
   if (!healthFacilityMpesaConfig) {
     const res = NextResponse.json(
-      { message: "Health facility M-PESA data not configured." },
+      { message: "Health facility payment data not configured." },
       { status: 403 }
     );
 

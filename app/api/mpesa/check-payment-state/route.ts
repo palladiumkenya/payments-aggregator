@@ -1,6 +1,6 @@
 import { db } from "@/app/db/drizzle-client";
 import { payments } from "@/app/db/schema";
-import { allowedOrigins, corsOptions } from "@/utils/cors";
+import { corsOptions } from "@/utils/cors";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
