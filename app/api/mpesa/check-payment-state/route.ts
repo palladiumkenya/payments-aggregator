@@ -19,7 +19,10 @@ export const POST = async (req: NextRequest) => {
 
     if (paymentRequests.length > 0) {
       response = NextResponse.json(
-        { status: paymentRequests.at(0)!.status },
+        {
+          status: paymentRequests.at(0)!.status,
+          referenceCode: paymentRequests.at(0)!.receiptNumber,
+        },
         {
           status: 200,
         }
