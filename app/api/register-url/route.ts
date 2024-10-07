@@ -1,15 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
-import { BASE_URL } from "@/config/env";
-import { getHealthFacilityMpesaConfig } from "@/config/mpesa-config";
-import { generateAccessToken } from "@/daraja/access-token";
+import {
+  getHealthFacilityMpesaConfig,
+  MPESA_CONFIG,
+} from "@/config/mpesa-config";
 import { RegisterUrlResponse } from "daraja-kit";
+import { generateSafaricomAccessToken } from "@/daraja/access-token";
+import { MPESA_APP_BASE_URL, SAFARICOM_BASE_URL } from "@/config/env";
 
 // This is a one-time API call that registers your validation and confirmation URLs
 export const POST = async (req: NextRequest) => {
   const requestBody = (await req.json()) as { mfl: string };
 
-  const facilityMpesaConfig = getHealthFacilityMpesaConfig(requestBody.mfl);
+  const facilityMpesaConfig = getHealthFacilityMpesaConfig(
+    requestBody.mfl
+  ) as MPESA_CONFIG;
 
   if (!facilityMpesaConfig) {
     return NextResponse.json(
@@ -18,15 +23,17 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
-  const accessTokenResponse = await generateAccessToken(facilityMpesaConfig);
+  const accessTokenResponse = await generateSafaricomAccessToken(
+    facilityMpesaConfig
+  );
 
   const res: RegisterUrlResponse = await axios.post(
-    `${BASE_URL}/mpesa/c2b/v1/registerurl`,
+    `${SAFARICOM_BASE_URL}/mpesa/c2b/v1/registerurl`,
     {
       ShortCode: parseInt(facilityMpesaConfig.MPESA_BUSINESS_SHORT_CODE),
       ResponseType: "Completed",
-      ConfirmationURL: `${BASE_URL}/api/confirmation`,
-      ValidationURL: `${BASE_URL}/api/validation`,
+      ConfirmationURL: `${MPESA_APP_BASE_URL}/api/confirmation`,
+      ValidationURL: `${MPESA_APP_BASE_URL}/api/validation`,
     },
     {
       headers: {
