@@ -1,6 +1,11 @@
 import axios from "axios";
 import { generateTimestamp, generatePassword } from "./utils";
-import { ENVIRONMENT, KCB_BASE_URL, SAFARICOM_BASE_URL } from "../config/env";
+import {
+  COOP_BASE_URL,
+  ENVIRONMENT,
+  KCB_BASE_URL,
+  SAFARICOM_BASE_URL,
+} from "../config/env";
 
 import {
   PhoneNumber,
@@ -11,12 +16,18 @@ import {
   STKPushBody,
   STKPushResponse,
 } from "daraja-kit";
-import { KCB_CONFIG, MPESA_CONFIG } from "@/config/mpesa-config";
+import { COOP_CONFIG, KCB_CONFIG, MPESA_CONFIG } from "@/config/mpesa-config";
 import {
+  generateCoopAccessToken,
   generateKCBAccessToken,
   generateSafaricomAccessToken,
 } from "./access-token";
-import { KCBStkPushBody, KCBStkPushResponse } from "@/types";
+import {
+  CoopSTKPushBody,
+  COOPSTKPushResponse,
+  KCBStkPushBody,
+  KCBStkPushResponse,
+} from "@/types";
 
 export type STKPushRequestParam = {
   phoneNumber: PhoneNumber;
@@ -34,7 +45,7 @@ export const stkPushRequest = async (
     transactionDesc,
     accountReference,
   }: STKPushRequestParam,
-  config: MPESA_CONFIG | KCB_CONFIG
+  config: MPESA_CONFIG | KCB_CONFIG | COOP_CONFIG
 ) => {
   // FOR NATIVE MPESA HEALTH FACILITIES
   if ("MPESA_BUSINESS_SHORT_CODE" in config) {
@@ -86,6 +97,32 @@ export const stkPushRequest = async (
         `Error occurred with status code ${err.response?.status}, ${err.response?.statusText}`
       );
     }
+  }
+
+  // FOR COOP MPESA HEALTH FACILITIES
+  if ("COOP_CONSUMER_KEY" in config) {
+    const coopAccessTokenResponse = await generateCoopAccessToken(config);
+
+    const coopSTKPushBody: CoopSTKPushBody = {
+      // TODO find out the correct message reference once the correct documentation is provided
+      MessageReference: "SOME MESSAGE REFERENCE",
+      TargetMSISDN: phoneNumber,
+      CallBackUrl: callbackURL,
+      TransactionAmount: amount,
+      TransactionNarration: transactionDesc,
+    };
+
+    const res = await axios.post<COOPSTKPushResponse>(
+      `${COOP_BASE_URL}`,
+      coopSTKPushBody,
+      {
+        headers: {
+          Authorization: `Bearer ${coopAccessTokenResponse.access_token}`,
+        },
+      }
+    );
+
+    return res.data;
   }
 
   // FOR KCB HEALTH FACILITIES

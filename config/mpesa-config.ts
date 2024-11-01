@@ -4,6 +4,7 @@ import { ENVIRONMENT, assertValue } from "./env";
 export type Config = {
   NATIVE: { [key: string]: MPESA_CONFIG };
   KCB: { [key: string]: KCB_CONFIG };
+  COOP: { [key: string]: COOP_CONFIG };
 };
 
 export type MPESA_CONFIG = {
@@ -22,6 +23,11 @@ export type KCB_CONFIG = {
   KCB_CONSUMER_SECRET: string;
 };
 
+export type COOP_CONFIG = {
+  COOP_CONSUMER_KEY: string;
+  COOP_CONSUMER_SECRET: string;
+};
+
 const config: Config = assertValue(
   configData as Config,
   "MISSING CONFIGURATION FILE"
@@ -29,7 +35,8 @@ const config: Config = assertValue(
 
 export const getHealthFacilityMpesaConfig = (
   mfl: string
-): MPESA_CONFIG | KCB_CONFIG | undefined => {
-  const facilityConfig = config.NATIVE[mfl] ?? config.KCB[mfl];
+): MPESA_CONFIG | KCB_CONFIG | undefined | COOP_CONFIG => {
+  const facilityConfig =
+    config.NATIVE[mfl] ?? config.KCB[mfl] ?? config.COOP[mfl];
   return facilityConfig;
 };

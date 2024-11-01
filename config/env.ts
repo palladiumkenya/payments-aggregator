@@ -12,6 +12,12 @@ export const SAFARICOM_BASE_URL =
 export const KCB_BASE_URL =
   ENVIRONMENT === "production" ? "" : "https://uat.buni.kcbgroup.com";
 
+// TODO find out the production URL
+export const COOP_BASE_URL =
+  ENVIRONMENT === "production"
+    ? ""
+    : "https://openapi-sandbox.co-opbank.co.ke/stkpush/safari";
+
 export const MPESA_APP_BASE_URL = assertValue(
   process.env.MPESA_APP_BASE_URL,
   "Missing environment variable: MPESA_APP_BASE_URL"

@@ -1,6 +1,6 @@
 import { KCB_BASE_URL, SAFARICOM_BASE_URL } from "@/config/env";
-import { KCB_CONFIG, MPESA_CONFIG } from "@/config/mpesa-config";
-import { KCBAccessTokenResponse } from "@/types";
+import { COOP_CONFIG, KCB_CONFIG, MPESA_CONFIG } from "@/config/mpesa-config";
+import { COOPAccessTokenResponse, KCBAccessTokenResponse } from "@/types";
 import axios from "axios";
 import { AccessTokenResponse } from "daraja-kit";
 
@@ -54,4 +54,13 @@ export const generateKCBAccessToken = async (
       `Error occurred with status code ${err.response?.status}, ${err.response?.statusText}`
     );
   }
+};
+
+export const generateCoopAccessToken = async (
+  COOPConfig: COOP_CONFIG
+): Promise<COOPAccessTokenResponse> => {
+  const { COOP_CONSUMER_KEY, COOP_CONSUMER_SECRET } = COOPConfig;
+  // TODO implement this when relevant documentation is supplied
+
+  return { access_token: "SOMETHING", expires_in: 3600, token_type: "Basic" };
 };
