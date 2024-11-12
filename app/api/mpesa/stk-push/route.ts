@@ -39,11 +39,7 @@ export const POST = async (request: NextRequest) => {
   const origin = request.headers.get("origin") ?? "";
 
   const mfl = requestBody.accountReference.substring(0, 5);
-  const billId = requestBody.accountReference.substring(
-    6,
-    requestBody.accountReference.indexOf("-")
-  );
-
+  const billId = requestBody.accountReference.split("#").at(-1)!;
   const healthFacilityMpesaConfig = getHealthFacilityMpesaConfig(mfl);
 
   if (!healthFacilityMpesaConfig) {
