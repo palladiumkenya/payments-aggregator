@@ -29,9 +29,7 @@ export const claims = mysqlTable("claims", {
   mfl: text("mfl").notNull(),
   claimCode: text("claim_code").notNull(),
   approvedAmount: int("approved_amount").notNull(),
-  status: text("status", {
-    enum: ["SUBMITTED", "COMPLETED", "REJECTED"],
-  }).notNull(),
+  status: text("status").notNull(),
   comment: text("comment"),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

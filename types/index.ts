@@ -31,3 +31,87 @@ export interface Header {
 }
 
 export type Claim = InferSelectModel<typeof claims>;
+
+export interface ProfessionalValidationFailureResponse {
+  resourceType: "OperationOutcome";
+  id: string;
+  issue: Issue[];
+}
+
+export interface PatientValidationFailureResponse {
+  resourceType: "OperationOutcome";
+  id: string;
+  issue: Issue[];
+}
+
+export interface Issue {
+  severity: string;
+  code: string;
+  diagnostics: string;
+}
+
+export interface ClaimResponse {
+  resourceType: "ClaimResponse";
+  id: string;
+  meta: Meta;
+  extension: Extension[];
+  status: string;
+  use: string;
+  request: Request;
+  outcome: string;
+  item: Item[];
+  total: Total[];
+}
+
+export interface Extension {
+  url: string;
+  valueCodeableConcept: ValueCodeableConcept;
+}
+
+export interface ValueCodeableConcept {
+  coding: Coding[];
+}
+
+export interface Coding {
+  system: string;
+  code: string;
+  display: string;
+}
+
+export interface Item {
+  itemSequence: number;
+  adjudication: Adjudication[];
+}
+
+export interface Adjudication {
+  category: Category;
+  reason: Category;
+  amount: AdjudicationAmount;
+}
+
+export interface AdjudicationAmount {
+  value: number;
+}
+
+export interface Category {
+  text: string;
+}
+
+export interface Meta {
+  versionId: string;
+  lastUpdated: Date;
+  source: string;
+}
+
+export interface Request {
+  reference: string;
+}
+
+export interface Total {
+  amount: TotalAmount;
+}
+
+export interface TotalAmount {
+  value: number;
+  currency: string;
+}
