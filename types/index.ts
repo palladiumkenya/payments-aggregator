@@ -1,4 +1,6 @@
+import { claims } from "@/app/db/schema";
 import { STKPushResponse } from "daraja-kit";
+import { InferSelectModel } from "drizzle-orm";
 
 export type KCBAccessTokenResponse = {
   access_token: string;
@@ -27,3 +29,5 @@ export interface Header {
   statusDescription: string;
   statusCode: string;
 }
+
+export type Claim = InferSelectModel<typeof claims>;

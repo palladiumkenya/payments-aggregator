@@ -23,3 +23,17 @@ export const payments = mysqlTable("payments", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const claims = mysqlTable("claims", {
+  id: int("id").primaryKey().autoincrement(),
+  mfl: text("mfl").notNull(),
+  claimCode: text("claim_code").notNull(),
+  approvedAmount: int("approved_amount").notNull(),
+  status: text("status", {
+    enum: ["SUBMITTED", "COMPLETED", "REJECTED"],
+  }).notNull(),
+  comment: text("comment"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
