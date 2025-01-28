@@ -35,8 +35,7 @@ export const POST = async (req: NextRequest) => {
   } = {
     //@ts-ignore TODO Temporarily as we wait for the mfl code to be passed
     mfl: claim.mfl,
-    //@ts-ignore TODO Temporarily as we wait for the claim code to be passed
-    claimCode: claim.claimCode,
+    claimCode: claim.request.reference.split("/").at(1)!,
     status: claim.outcome,
     comment: null,
     notes: null,
