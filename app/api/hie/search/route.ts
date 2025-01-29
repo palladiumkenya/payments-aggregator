@@ -7,11 +7,10 @@ import { NextRequest, NextResponse } from "next/server";
 export const POST = async (req: NextRequest) => {
   const origin = req.headers.get("origin") ?? "";
   const searchObject = (await req.json()) as {
-    mflCode: string;
-    claimCode: string;
+    claimId: string;
   };
 
-  if (!searchObject.mflCode || !searchObject.claimCode) {
+  if (!searchObject.claimId) {
     const response = NextResponse.json({
       status: 400,
       json: { message: "Missing required fields." },
@@ -23,12 +22,7 @@ export const POST = async (req: NextRequest) => {
   const selectedClaims = await db
     .select()
     .from(claims)
-    .where(
-      and(
-        eq(claims.mfl, searchObject.mflCode),
-        eq(claims.claimCode, searchObject.claimCode)
-      )
-    );
+    .where(eq(claims.claimId, searchObject.claimId));
 
   if (selectedClaims.length === 0) {
     const response = NextResponse.json(

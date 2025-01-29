@@ -26,11 +26,10 @@ export const payments = mysqlTable("payments", {
 
 export const claims = mysqlTable("claims", {
   id: int("id").primaryKey().autoincrement(),
-  mfl: text("mfl").notNull(),
-  claimCode: text("claim_code").notNull(),
+  claimId: text("claim_id").notNull(),
   approvedAmount: int("approved_amount").notNull(),
   status: text("status").notNull(),
-  comment: text("comment"),
+  commentFromApprover: text("comment"),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

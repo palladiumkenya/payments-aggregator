@@ -26,20 +26,17 @@ export const POST = async (req: NextRequest) => {
   }
 
   const claimResponse: {
-    mfl: string;
-    claimCode: string;
+    claimId: string;
     status: string;
     comment: string | null;
     notes: string | null;
     approvedAmount: number;
   } = {
-    //@ts-ignore TODO Temporarily as we wait for the mfl code to be passed
-    mfl: claim.mfl,
-    claimCode: claim.request.reference.split("/").at(1)!,
+    claimId: claim.id,
     status: claim.outcome,
+    approvedAmount: claim.total[0].amount.value,
     comment: null,
     notes: null,
-    approvedAmount: claim.total[0].amount.value,
   };
 
   console.log("claim", claim);
