@@ -59,8 +59,8 @@ export interface ClaimResponse {
   use: string;
   request: Request;
   outcome: string;
-  item: Item[];
-  total: Total[];
+  item?: Item[];
+  total?: Total[];
 }
 
 export interface Extension {
@@ -114,4 +114,130 @@ export interface Total {
 export interface TotalAmount {
   value: number;
   currency: string;
+}
+
+export interface ClaimResponseNew {
+  resourceType: "Bundle";
+  entry: Entry[];
+}
+
+export interface Entry {
+  resource: Resource;
+}
+
+export type Resource = TaskResource | ClaimResource;
+
+export interface TaskResource {
+  resourceType: "Task";
+  id: string;
+  meta: Meta;
+  status: string;
+  intent: string;
+  priority: string;
+  code: CodeableConcept;
+  focus: Reference;
+  authoredOn: string;
+  requester: Reference;
+  output?: Array<{
+    valueCodeableConcept: CodeableConcept;
+  }>;
+}
+
+export interface ClaimResource {
+  resourceType: "Claim";
+  id: string;
+  meta: Meta;
+  extension?: Array<ExtensionNew>;
+  identifier: Array<Identifier>;
+  status: string;
+  type: CodeableConcept;
+  subType: CodeableConcept;
+  use: string;
+  patient: Reference;
+  billablePeriod: {
+    start: string;
+    end: string;
+  };
+  created: string;
+  provider: Reference;
+  priority: CodeableConcept;
+  careTeam: Array<CareTeam>;
+  supportingInfo: Array<SupportingInfo>;
+  diagnosis: Array<Diagnosis>;
+  insurance: Array<Insurance>;
+  item: Array<ItemNew>;
+  total: AdjudicationAmount;
+}
+
+export interface ExtensionNew {
+  url: string;
+  valueDateTime?: string;
+  valueString?: string;
+}
+
+export interface Identifier {
+  use: string;
+  type: CodeableConcept;
+  value: string;
+}
+
+export interface CareTeam {
+  sequence: number;
+  provider: Reference;
+  responsible: boolean;
+  role: CodeableConcept;
+}
+
+export interface SupportingInfo {
+  sequence: number;
+  category: Category;
+  valueString: string;
+}
+
+export interface Type {
+  text: string;
+}
+
+export interface Diagnosis {
+  id: string;
+  sequence: number;
+  diagnosisCodeableConcept: CodeableConcept;
+  type: Array<Type>;
+}
+
+export interface ItemNew {
+  sequence: number;
+  productOrService: CodeableConcept;
+  servicedDate: string;
+  quantity: AdjudicationAmount;
+  unitPrice: TotalAmount;
+  factor: number;
+  net: TotalAmount;
+}
+
+export interface Insurance {
+  sequence: number;
+  focal: boolean;
+  coverage: Coverage;
+}
+
+export interface Coverage {
+  coverage: string;
+}
+
+export interface CodeableConcept {
+  coding?: Coding[];
+  text?: string;
+}
+
+export interface Reference {
+  id?: string;
+  reference?: string;
+  type?: string;
+  identifier?: {
+    use?: string;
+    type?: CodeableConcept;
+    system?: string;
+    value: string;
+  };
 }
