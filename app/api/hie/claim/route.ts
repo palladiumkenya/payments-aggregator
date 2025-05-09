@@ -82,7 +82,7 @@ export const GET = async (req: NextRequest) => {
 /**
  * GET a specific claim by ID from route parameters
  */
-export const GET_BY_ID = async (
+export const OPTIONS = async (
   req: NextRequest,
   { params }: { params: { claimId: string } }
 ) => {
